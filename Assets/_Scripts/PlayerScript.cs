@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
@@ -10,6 +12,7 @@ public class PlayerScript : MonoBehaviour
     public Camera cam;
     public int averageDamage;
     public float range;
+    public Transform torsoRotation;
     GameObject existingTarget;
     void Start()
     {
@@ -119,4 +122,13 @@ public class PlayerScript : MonoBehaviour
             rb.velocity = Vector3.Normalize(rb.velocity) * maxSpeed;
         }
     }
+
+
+    //This is to handle the rotation of the torso
+    public void HandleRotation(Vector3 point)
+    {
+        point.y = gameObject.transform.position.y;
+
+    }
+
 }
