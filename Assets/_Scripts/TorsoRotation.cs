@@ -7,7 +7,7 @@ public class TorsoRotation: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        transform.root.gameObject.GetComponent<PlayerScript>().torsoRotation=transform;
     }
 
     // Update is called once per frame
