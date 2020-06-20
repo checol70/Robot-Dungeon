@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
@@ -10,11 +12,22 @@ public class PlayerScript : MonoBehaviour
     public Camera cam;
     public int averageDamage;
     public float range;
+    public Transform torsoRotation;
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
+    
+
+    private void Update()
+    {
+        //Handle torso rotation
+        RaycastHit rh;
+        Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out rh, 100);
+        HandleRotation(rh.point);
+    
+    }
     void FixedUpdate()
     {
         Vector3 dir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
@@ -30,7 +43,7 @@ public class PlayerScript : MonoBehaviour
 
     public void HandleLoot(GameObject loot)
     {
-
+        //Gotta get that sweet swag
     }
 
     void Attack(GameObject target)
@@ -56,4 +69,14 @@ public class PlayerScript : MonoBehaviour
             rb.velocity = Vector3.Normalize(rb.velocity) * maxSpeed;
         }
     }
+
+
+    //This is to handle the rotation of the torso
+    public void HandleRotation(Vector3 point)
+    {
+        point.y = torsoRotation.position.y;
+        torsoRotation.LookAt(point);
+
+    }
+
 }
