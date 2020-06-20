@@ -5,8 +5,10 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     Rigidbody rb;
-    public float speed;
-    // Start is called before the first frame update
+    public float maxSpeed;
+    public float accelSpeed;
+    public Camera cam;
+
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -15,9 +17,16 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        Vector3 dir = new Vector3(x, 0, z);
-        rb.AddForce(dir * speed);
+        if (Input.GetMouseButton(0))
+        {
+            RaycastHit rh;
+            Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out rh, 100);
+            Vector3 dir = rh.point - gameObject.transform.position;
+            rb.AddForce(dir * accelSpeed);
+            if(rb.velocity.magnitude > maxSpeed)
+            {
+                rb.velocity = Vector3.Normalize(rb.velocity) * maxSpeed;
+            }
+        }
     }
 }
