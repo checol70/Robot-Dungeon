@@ -13,6 +13,21 @@ public class PlayerScript : MonoBehaviour
     public int averageDamage;
     public float range;
     public Transform torsoRotation;
+
+    public static GameObject player;
+
+    private void Awake()
+    {
+        if(player == null)
+        {
+            player = gameObject;
+        }
+        if(gameObject!= player)
+        {
+            Destroy(this);
+        }
+    }
+
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -33,6 +48,35 @@ public class PlayerScript : MonoBehaviour
         Vector3 dir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
         Vector3.Normalize(dir);
+
+        if(Mathf.Abs(dir.x) + Mathf.Abs(dir.z) > 1)
+        {
+            dir.x = dir.x / 2;
+            dir.z = dir.z / 2;
+            
+            if(Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
+            {
+                if(dir.x > 0)
+                {
+                    dir.x = 1 - Mathf.Abs(dir.z);
+                }
+                else
+                {
+                    dir.x = -1 + Mathf.Abs(dir.z);
+                }
+            }
+            else
+            {
+                if (dir.z > 0)
+                {
+                    dir.z = 1 - Mathf.Abs(dir.x);
+                }
+                else
+                {
+                    dir.z = -1 + Mathf.Abs(dir.x);
+                }
+            }
+        }
 
         Debug.Log(dir);
         Debug.Log(dir.normalized);
