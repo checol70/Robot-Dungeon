@@ -13,7 +13,21 @@ public class PlayerScript : MonoBehaviour
     public int averageDamage;
     public float range;
     public Transform torsoRotation;
-    GameObject existingTarget;
+
+    public static GameObject player;
+
+    private void Awake()
+    {
+        if(player == null)
+        {
+            player = gameObject;
+        }
+        if(gameObject!= player)
+        {
+            Destroy(this);
+        }
+    }
+
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -29,77 +43,51 @@ public class PlayerScript : MonoBehaviour
         HandleRotation(rh.point);
     
     }
-    // Update is called once per frame
     void FixedUpdate()
     {
-        // first getting if the left mouse button is down.
-        if (Input.GetMouseButton(0))
+        Vector3 dir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        Vector3.Normalize(dir);
+
+        if(Mathf.Abs(dir.x) + Mathf.Abs(dir.z) > 1)
         {
-            RaycastHit rh;
-
-            //then converting the mouses position to a ray to get the point that the ray hits.
-            Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out rh, 100);
-
-            // we will be comparing tags to decide what we are doing.
-            string tag = rh.collider.gameObject.tag;
-
-            if (existingTarget == null)
+            dir.x = dir.x / 2;
+            dir.z = dir.z / 2;
+            
+            if(Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
             {
-                switch (tag)
+                if(dir.x > 0)
                 {
-                    //first if it is ground we move towards it.
-                    case "Ground":
-                        HandleMovement(rh.point);
-                        break;
-                    // if it is an enemy then we want to either move close enough to attack, or attack it.
-                    case "Enemy":
-                        HandleEnemyChosen(rh.collider.gameObject);
-                        existingTarget = rh.collider.gameObject;
-                        break;
-                    //if it is loot then we want to either get close enough to pick it up, or pick it up.
-                    case "Loot":
-                        HandleLoot(rh.collider.gameObject);
-                        existingTarget = rh.collider.gameObject;
-                        break;
-                    default:
-                        Debug.Log($"Unhandled tag: {tag} Please change the tag to a different one or add case to handle new tag.");
-                        break;
+                    dir.x = 1 - Mathf.Abs(dir.z);
+                }
+                else
+                {
+                    dir.x = -1 + Mathf.Abs(dir.z);
                 }
             }
             else
             {
-                switch (existingTarget.tag)
+                if (dir.z > 0)
                 {
-                    case "Enemy":
-                        HandleEnemyChosen(existingTarget);
-                        break;
-                    case "Loot":
-                        HandleLoot(existingTarget);
-                        break;
-                    default:
-                        Debug.Log("New tag added for existingTarget, Please add case for new tag on existingTarget");
-                        break;
-
+                    dir.z = 1 - Mathf.Abs(dir.x);
+                }
+                else
+                {
+                    dir.z = -1 + Mathf.Abs(dir.x);
                 }
             }
         }
+
+        Debug.Log(dir);
+        Debug.Log(dir.normalized);
+        Vector3 acceleration = dir * accelSpeed * Time.fixedDeltaTime;
+
+        rb.AddForce(acceleration, ForceMode.VelocityChange);
     }
 
     public void HandleLoot(GameObject loot)
     {
         //Gotta get that sweet swag
-    }
-
-    public void HandleEnemyChosen(GameObject target)
-    {
-        if(Vector3.Distance(transform.position, target.transform.position) <= range)
-        {
-            Attack(target);
-        }
-        else
-        {
-            HandleMovement(target.transform.position);
-        }
     }
 
     void Attack(GameObject target)
@@ -114,6 +102,7 @@ public class PlayerScript : MonoBehaviour
 
         //getting the difference between where we are and where the point that was hit was.
         Vector3 dir = point - gameObject.transform.position;
+
 
         //Adding the force, Normalize makes the magnitude equal to one, and multiplied by the change in time over a physics frame.
         rb.AddForce(Vector3.Normalize(dir) * accelSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
