@@ -105,7 +105,7 @@ public class PlayerScript : MonoBehaviour
 
 
         //Adding the force, Normalize makes the magnitude equal to one, and multiplied by the change in time over a physics frame.
-        rb.AddForce(Vector3.Normalize(dir) * accelSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
+        rb.AddForce(Vector3.Normalize(dir) * accelSpeed, ForceMode.VelocityChange);
 
         //if we exceed the max speed then this will limit us to maxSpeed.
         if (rb.velocity.magnitude > maxSpeed)
