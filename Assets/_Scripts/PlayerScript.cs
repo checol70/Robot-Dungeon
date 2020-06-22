@@ -13,8 +13,30 @@ public class PlayerScript : MonoBehaviour
     public int averageDamage;
     public float range;
     public Transform torsoRotation;
-
+    List<GunScript> guns;
     public static GameObject player;
+
+    public void AddGun(GunScript gun)
+    {
+        if(guns == null)
+        {
+            guns = new List<GunScript>();
+        }
+        guns.Add(gun);
+    }
+
+    public void RemoveGun(GunScript gun)
+    {
+        guns.Remove(gun);
+    }
+
+    void Shoot()
+    {
+        foreach(GunScript g in guns)
+        {
+            g.Fire();
+        }
+    }
 
     private void Awake()
     {
@@ -41,7 +63,11 @@ public class PlayerScript : MonoBehaviour
         RaycastHit rh;
         Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out rh, 100);
         HandleRotation(rh.point);
-    
+        if (Input.GetMouseButton(0))
+        {
+            Shoot();
+            Debug.Log("Shots Fired");
+        }
     }
     void FixedUpdate()
     {
@@ -78,8 +104,6 @@ public class PlayerScript : MonoBehaviour
             }
         }
 
-        Debug.Log(dir);
-        Debug.Log(dir.normalized);
         Vector3 acceleration = dir * accelSpeed * Time.fixedDeltaTime;
 
         rb.AddForce(acceleration, ForceMode.VelocityChange);
@@ -105,7 +129,7 @@ public class PlayerScript : MonoBehaviour
 
 
         //Adding the force, Normalize makes the magnitude equal to one, and multiplied by the change in time over a physics frame.
-        rb.AddForce(Vector3.Normalize(dir) * accelSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
+        rb.AddForce(Vector3.Normalize(dir) * accelSpeed, ForceMode.VelocityChange);
 
         //if we exceed the max speed then this will limit us to maxSpeed.
         if (rb.velocity.magnitude > maxSpeed)
