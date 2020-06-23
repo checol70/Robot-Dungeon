@@ -15,6 +15,9 @@ public class PlayerScript : MonoBehaviour
     public Transform torsoRotation;
     List<GunScript> guns;
     public static GameObject player;
+    List<GameObject> inventory;
+    List<GameObject> weaponSlots;
+
 
     public void AddGun(GunScript gun)
     {
@@ -66,7 +69,6 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetMouseButton(0))
         {
             Shoot();
-            Debug.Log("Shots Fired");
         }
     }
     void FixedUpdate()
