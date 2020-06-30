@@ -15,9 +15,28 @@ public class PlayerScript : MonoBehaviour
     public Transform torsoRotation;
     List<GunScript> guns;
     public static GameObject player;
+    public GameObject weaponSlot;
+    Transform weaponSlotHolder;
     List<GameObject> inventory;
     List<GameObject> weaponSlots;
+    List<Transform> weaponHooks;
 
+
+
+    public void AddWeaponHook(Transform hook)
+    {
+        weaponHooks.Add(hook);
+        GameObject go = Instantiate(weaponSlot, weaponSlotHolder);
+        go.GetComponent<WeaponSlotScript>().SetWeaponHook(hook);
+    }
+    public void RemoveWeaponHooks()
+    {
+        foreach(GameObject go in weaponSlots)
+        {
+            Destroy(go);
+        }
+        weaponHooks.Clear();
+    }
 
     public void AddGun(GunScript gun)
     {
@@ -73,42 +92,11 @@ public class PlayerScript : MonoBehaviour
     }
     void FixedUpdate()
     {
-        Vector3 dir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        Vector3 dir = PlayerMovementScript.GetInputDir(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
 
-        Vector3.Normalize(dir);
+        Vector3 acceleration = dir * accelSpeed;
 
-        if(Mathf.Abs(dir.x) + Mathf.Abs(dir.z) > 1)
-        {
-            dir.x = dir.x / 2;
-            dir.z = dir.z / 2;
-            
-            if(Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
-            {
-                if(dir.x > 0)
-                {
-                    dir.x = 1 - Mathf.Abs(dir.z);
-                }
-                else
-                {
-                    dir.x = -1 + Mathf.Abs(dir.z);
-                }
-            }
-            else
-            {
-                if (dir.z > 0)
-                {
-                    dir.z = 1 - Mathf.Abs(dir.x);
-                }
-                else
-                {
-                    dir.z = -1 + Mathf.Abs(dir.x);
-                }
-            }
-        }
-
-        Vector3 acceleration = dir * accelSpeed * Time.fixedDeltaTime;
-
-        rb.AddForce(acceleration, ForceMode.VelocityChange);
+        rb.AddForce(acceleration, ForceMode.Force);
     }
 
     public void HandleLoot(GameObject loot)

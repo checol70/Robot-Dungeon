@@ -3,27 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public enum ItemType
-{
-    material = 0,
-    weapon,
-    legs,
-    torso,
-    consumable,
-    utility
-}
+
 
 public class InventorySlotScript : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 {
-
+    public static Transform previousSlot;
+    ItemType allowedItems;
     public void OnPointerUp(PointerEventData eventData)
     {
         if(OnTopSlotScript.onTopSlot.childCount > 0)
         {
-            Transform t = OnTopSlotScript.onTopSlot.GetChild(0);
-            t.SetParent(transform);
-            t.localPosition = Vector3.zero;
-            ItemPutIn();
+            GameObject go = OnTopSlotScript.onTopSlot.GetChild(0).gameObject;
+            if (allowedItems == go.GetComponent<ItemScript>().GetItemType())
+            {
+                if (transform.childCount > 0)
+                {
+                    Transform previous = transform.GetChild(0);
+                    previous.SetParent(previousSlot);
+                    previous.position = Vector3.zero;
+                    ItemTakenOut();
+                }
+                Transform t = OnTopSlotScript.onTopSlot.GetChild(0);
+                t.SetParent(transform);
+                t.localPosition = Vector3.zero;
+                ItemPutIn();
+            }
+            else
+            {
+                Transform t = OnTopSlotScript.onTopSlot.GetChild(0);
+                t.SetParent(previousSlot);
+                t.localPosition = Vector3.zero;
+            }
         }
     }
 
@@ -42,6 +52,7 @@ public class InventorySlotScript : MonoBehaviour, IPointerUpHandler, IPointerDow
         {
             Transform t = transform.GetChild(0);
             t.SetParent(OnTopSlotScript.onTopSlot.GetChild(0));
+            previousSlot = transform;
             ItemTakenOut();
         }
     }
