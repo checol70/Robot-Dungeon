@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//this is only to make sure that whatever we grab is shown on top of everything.
 public class OnTopSlotScript : MonoBehaviour
 {
     public static Transform onTopSlot;

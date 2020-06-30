@@ -3,46 +3,46 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public enum ItemType
-{
-    material = 0,
-    weapon,
-    legs,
-    torso,
-    consumable,
-    utility
-}
+
 
 public class InventorySlotScript : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 {
+    public static ISlot previousSlot;
+    ISlot handler;
+    void Awake()
+    {
+        handler = gameObject.GetComponent<ISlot>();
+    }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if(OnTopSlotScript.onTopSlot.childCount > 0)
+        if (OnTopSlotScript.onTopSlot.childCount > 0)
         {
-            Transform t = OnTopSlotScript.onTopSlot.GetChild(0);
-            t.SetParent(transform);
-            t.localPosition = Vector3.zero;
-            ItemPutIn();
+            Transform lookingToPlace = OnTopSlotScript.onTopSlot.GetChild(0);
+            ItemType lookingToPlaceItemType = lookingToPlace.gameObject.GetComponent<ItemScript>().GetItemType();
+            if (handler.CheckItem(lookingToPlaceItemType))
+            {
+                if(transform.childCount > 0)
+                {
+                    Transform currentlyHolding = transform.GetChild(0);
+                    previousSlot.AddItem(currentlyHolding);
+                    currentlyHolding.localPosition = Vector3.zero;
+                }
+                handler.AddItem(lookingToPlace);
+            }
+            else
+            {
+                previousSlot.AddItem(lookingToPlace);
+            }
+            lookingToPlace.localPosition = Vector3.zero;
         }
     }
-
-    protected virtual void ItemPutIn()
-    {
-        
-    }
-    protected virtual void ItemTakenOut()
-    {
-
-    }
-
     public void OnPointerDown(PointerEventData eventData)
     {
         if(transform.childCount > 0)
         {
-            Transform t = transform.GetChild(0);
-            t.SetParent(OnTopSlotScript.onTopSlot.GetChild(0));
-            ItemTakenOut();
+            Transform currentlyHolding = transform.GetChild(0);
+            handler.RemoveItem(currentlyHolding);
         }
     }
 

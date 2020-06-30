@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LegSlotScript : MonoBehaviour
+public class LegSlotScript : InventorySlotScript, ISlot
 {
-    // Start is called before the first frame update
-    void Start()
+    public void AddItem(Transform item)
     {
-        
+        //Here is where we will handle the leg spawning mechanic.
     }
-
-    // Update is called once per frame
-    void Update()
+    public void RemoveItem(Transform item)
     {
-        
+        //Here is where we will handle the leg removing mechanic.
+    }
+    public bool CheckItem(ItemType itemType)
+    {
+        return itemType == ItemType.legs;
     }
 }
