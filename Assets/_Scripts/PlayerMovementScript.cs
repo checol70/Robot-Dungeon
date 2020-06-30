@@ -10,6 +10,7 @@ public static class PlayerMovementScript
 
 
         //for some reason Unity's normalized don't total 1 all the time. since we are multiplying this we want the total to equal 1.
+
         if (Mathf.Abs(dir.x) + Mathf.Abs(dir.z) > 1)
         {
             float divider = Mathf.Abs(dir.x) + Mathf.Abs(dir.z);

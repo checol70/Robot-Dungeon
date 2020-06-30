@@ -6,7 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Tests
 {
-    public class NewTestScript
+    public class PlayerMovementNormalizationTests
     {
         [Test] 
         public void TestPlayerMovementScript()

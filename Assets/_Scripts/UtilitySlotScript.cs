@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UtilitySlotScript : EquipmentSlotScript
+public class UtilitySlotScript : InventorySlotScript, ISlot
 {
-    public override void Equip()
-    {
-        
-    }
-    public override void UnEquip()
+    public void AddItem(Transform item)
     {
 
+    }
+    public void RemoveItem(Transform item)
+    {
+
+    }
+    public bool CheckItem(ItemType item)
+    {
+        return item == ItemType.utility;
     }
 }
