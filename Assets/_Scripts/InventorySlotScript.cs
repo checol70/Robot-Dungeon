@@ -9,6 +9,13 @@ public class InventorySlotScript : MonoBehaviour, IPointerUpHandler, IPointerDow
 {
     public static ISlot previousSlot;
     ISlot handler;
+    private static Transform onTopSlot;
+
+    public static void SetOnTopSlot(Transform _onTopSlot)
+    {
+        onTopSlot = _onTopSlot;
+    }
+
     void Awake()
     {
         handler = gameObject.GetComponent<ISlot>();
@@ -16,17 +23,19 @@ public class InventorySlotScript : MonoBehaviour, IPointerUpHandler, IPointerDow
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (OnTopSlotScript.onTopSlot.childCount > 0)
+        if (onTopSlot.childCount > 0)
         {
-            Transform lookingToPlace = OnTopSlotScript.onTopSlot.GetChild(0);
+            List<Transform> itemsToCenter = new List<Transform>();
+            Transform lookingToPlace = onTopSlot.GetChild(0);
             ItemType lookingToPlaceItemType = lookingToPlace.gameObject.GetComponent<ItemScript>().GetItemType();
+            itemsToCenter.Add(lookingToPlace);
             if (handler.CheckItem(lookingToPlaceItemType))
             {
                 if(transform.childCount > 0)
                 {
                     Transform currentlyHolding = transform.GetChild(0);
                     previousSlot.AddItem(currentlyHolding);
-                    currentlyHolding.localPosition = Vector3.zero;
+                    itemsToCenter.Add(currentlyHolding);
                 }
                 handler.AddItem(lookingToPlace);
             }
@@ -34,7 +43,7 @@ public class InventorySlotScript : MonoBehaviour, IPointerUpHandler, IPointerDow
             {
                 previousSlot.AddItem(lookingToPlace);
             }
-            lookingToPlace.localPosition = Vector3.zero;
+            ReCenterScript.Center(itemsToCenter.ToArray());
         }
     }
     public void OnPointerDown(PointerEventData eventData)

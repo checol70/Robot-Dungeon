@@ -21,6 +21,11 @@ public class GunScript : MonoBehaviour
         transform.root.gameObject.GetComponent<PlayerScript>().AddGun(this);
     }
 
+    private void OnDestroy()
+    {
+        transform.root.gameObject.GetComponent<PlayerScript>().RemoveGun(this);
+    }
+
     public void Fire()
     {
         if (Time.time >= nextFireTime)

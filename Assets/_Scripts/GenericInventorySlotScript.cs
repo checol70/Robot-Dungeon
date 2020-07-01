@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenericInventorySlotScript : MonoBehaviour
+public class GenericInventorySlotScript : InventorySlotScript, ISlot
 {
-    // Start is called before the first frame update
-    void Start()
+    public void AddItem(Transform transform)
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
+    }
+    public void RemoveItem(Transform transform)
     {
-        
+
+    }
+    public bool CheckItem(ItemType itemType)
+    {
+        return true;
     }
 }
