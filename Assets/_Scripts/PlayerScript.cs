@@ -20,7 +20,16 @@ public class PlayerScript : MonoBehaviour
     List<GameObject> inventory;
     List<GameObject> weaponSlots;
     List<Transform> weaponHooks;
+    Transform onTopSlot;
 
+    public Transform GetOnTopSlot()
+    {
+        return onTopSlot;
+    }
+    public void SetOnTopSlot(Transform t)
+    {
+        onTopSlot = t;
+    }
 
 
     public void AddWeaponHook(Transform hook)
